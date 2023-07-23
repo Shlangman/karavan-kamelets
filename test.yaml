@@ -1,0 +1,42 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: Kamelet
+metadata:
+name: telegram-sink
+annotations:
+camel.apache.org/kamelet.icon: "data:image/svg+xml;base64,..."
+camel.apache.org/provider: "Apache Software Foundation"
+camel.apache.org/kamelet.group: "Sinks"
+spec:
+definition:
+title: "Telegram Sink"
+description: |-
+Send messages to a Telegram chat.
+required:
+•  authorizationToken
+
+•  chatId
+
+type: object
+properties:
+authorizationToken:
+title: Authorization Token
+description: The authorization token for the bot.
+type: string
+x-descriptors:
+•  urn:k8s:io:sundr:secretKeySelector:key
+
+•  urn:k8s:io:sundr:secretKeySelector:name=telegram-sink-secret
+
+chatId:
+title: Chat ID
+description: The identifier or username of the target chat.
+type: string
+flow:
+from:
+uri: "kamelet:source"
+steps:
+•  to:
+
+uri: "telegram:bots/{{authorizationToken}}"
+parameters:
+chatId: "{{chatId}}"
